@@ -1,8 +1,6 @@
-function initPjax() {
-  new Pjax({
-    selectors: ["title", ".js-Pjax", "main", "aside"],
-  });
-}
+const pjax = new Pjax({
+  selectors: ["title", ".js-Pjax", "main", "aside"],
+});
 
 // for sidebar
 function isHome() {
@@ -13,6 +11,5 @@ function isHome() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", initPjax);
 document.addEventListener("DOMContentLoaded", isHome);
 document.addEventListener("pjax:success", isHome);
