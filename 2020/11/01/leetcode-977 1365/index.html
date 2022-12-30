@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#6200ee"><meta name="author" content="Theffth"><meta name="copyright" content="Theffth"><meta name="generator" content="Hexo 4.2.1"><meta name="theme" content="hexo-theme-yun"><title>LeetCode - 977 1365 | T君的小屋</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.21/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_ed8vp4atwoj.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link rel="shortcut icon" type="image/svg+xml" href="/logo.svg"><link rel="mask-icon" href="/logo.svg" color="#6200ee"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="/css/hexo-theme-yun.css"><link rel="alternate" href="/atom.xml" title="T君的小屋"><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"theffth.github.io","root":"/","title":"T君的小屋","version":"1.2.0","mode":"auto","copycode":true,"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><meta name="description" content="LeetCode 977 1365 Solution">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode - 977 1365">
+<meta property="og:url" content="http://theffth.github.io/2020/11/01/leetcode-977%201365/index.html">
+<meta property="og:site_name" content="T君的小屋">
+<meta property="og:description" content="LeetCode 977 1365 Solution">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-01T07:19:28.000Z">
+<meta property="article:modified_time" content="2020-11-01T07:29:13.164Z">
+<meta property="article:author" content="Theffth">
+<meta property="article:tag" content="977 1365">
+<meta name="twitter:card" content="summary"><script src="/js/ui/mode.js"></script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="/js/prism/prism.css"><link rel="alternate" href="/atom.xml" title="T君的小屋" type="application/atom+xml">
+</head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info mickey-mouse"><a class="site-author-avatar" href="/about/" title="Theffth"><img width="96" loading="lazy" src="https://i.loli.net/2020/10/23/EgpBftlhNG5Xaxb.png" alt="Theffth"><span class="site-author-status" title="dropping hair">😆</span></a><div class="site-author-name"><a href="/about/">Theffth</a></div><a class="site-name" href="/about/site.html">T君的小屋</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">5</span></a></div><a class="site-state-item hty-icon-button" href="https://yun.yunyoujun.cn" target="_blank" rel="noopener" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/Theffth" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:1102468264@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#977-有序数组的平方"><span class="toc-number">1.</span> <span class="toc-text">977. 有序数组的平方</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#first-try"><span class="toc-number">1.1.</span> <span class="toc-text">first try</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-知识补充：范围for语句"><span class="toc-number">1.2.</span> <span class="toc-text">C++知识补充：范围for语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#better-solution"><span class="toc-number">1.3.</span> <span class="toc-text">better solution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1365-有多少小于当前数字的数字"><span class="toc-number">2.</span> <span class="toc-text">1365. 有多少小于当前数字的数字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#first-try-1"><span class="toc-number">2.1.</span> <span class="toc-text">first try</span></a></li></ol></li></ol></div></div></div><div class="tag-cloud"><div class="tag-cloud-tags"><a href="/tags/977-1365/" style="font-size: 12px; color: #999">977 1365</a> <a href="/tags/WP/" style="font-size: 12px; color: #999">WP</a> <a href="/tags/compiler/" style="font-size: 12px; color: #999">compiler</a> <a href="/tags/shellshock/" style="font-size: 12px; color: #999">shellshock</a> <a href="/tags/%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6%E6%BC%8F%E6%B4%9E/" style="font-size: 12px; color: #999">竞态条件漏洞</a></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://theffth.github.io/2020/11/01/leetcode-977%201365/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Theffth"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="T君的小屋"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">LeetCode - 977 1365</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2020-11-01 15:19:28" itemprop="dateCreated datePublished" datetime="2020-11-01T15:19:28+08:00">2020-11-01</time></div><div class="post-classify"><span class="post-category"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span> <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/LeetCode/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">LeetCode</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag" href="/tags/977-1365/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">977 1365</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#6200ee;"><h2 id="977-有序数组的平方"><a href="#977-有序数组的平方" class="headerlink" title="977. 有序数组的平方"></a><a href="https://leetcode-cn.com/problems/squares-of-a-sorted-array/" target="_blank" rel="noopener">977. 有序数组的平方</a></h2><h3 id="first-try"><a href="#first-try" class="headerlink" title="first try"></a>first try</h3><pre><code class="line-numbers language-C++">class Solution {
+public:
+    vector&lt;int&gt; sortedSquares(vector&lt;int&gt;&amp; A) {
+    vector&lt;int&gt; result;
+    for(int i=0;i&lt;A.size();i++)
+    {
+        int tmp=A[i];
+        result.push_back(tmp*tmp);
+    }
+    sort(result.begin(),result.end());
+    return result;
+    }
+};</code></pre>
+<h3 id="C-知识补充：范围for语句"><a href="#C-知识补充：范围for语句" class="headerlink" title="C++知识补充：范围for语句"></a>C++知识补充：范围for语句</h3><pre><code class="line-numbers language-C++">for(declaration : expression)
+    statement</code></pre>
+<ul>
+<li>要求expression必须是一个能够返回迭代器begin和end成员的序列类型（数组、初始化列表、vector和string等等）</li>
+<li>要求declaration定义一个变量，满足序列中的每个元素都能转换成该变量的类型（auto）</li>
+<li>如果需要对序列中的元素执行修改写操作，需要把循环变量声明成引用类型</li>
+<li>每次迭代都会重新定义循环控制变量，并将其初始化为序列的下一个值，随后执行statement</li>
+</ul>
+<pre><code class="line-numbers language-C++">class Solution {
+public:
+    vector&lt;int&gt; sortedSquares(vector&lt;int&gt;&amp; A) {
+        vector&lt;int&gt; result;
+        for(int num:A)
+        {
+            result.push_back(num*num);
+        }
+        sort(result.begin(),result.end());
+        return result;
+    }
+};</code></pre>
+<h3 id="better-solution"><a href="#better-solution" class="headerlink" title="better solution"></a>better solution</h3><p>第一种方法没有利用到题目中整数数组A为非递减排序的条件，需要使用sort()快排，我们可以利用双指针避免。</p>
+<p>由于整数数组A非递减排序，那么以第一个非负数为界，向左序列的数的平方递增，向右序列的数的平方也递增，我们只需要使用双指针分别向两边走并不断把较小的数加入结果序列并重点关注边界的情况即可：</p>
+<pre><code class="line-numbers language-C++">class Solution {
+public:
+    vector&lt;int&gt; sortedSquares(vector&lt;int&gt;&amp; A) {
+        int boundary=-1;
+        for(int i=0;i&lt;A.size();i++){
+            if(A[i]&lt;0)
+            {
+                boundary++;
+            }
+            else
+                break;
+        }
+        vector&lt;int&gt; result;
+        int i = boundary , j = boundary+1;
+        while(i&gt;=0||j&lt;A.size()){
+            if(i&lt;0){
+                result.push_back(A[j]*A[j]);
+                ++j;
+            }
+            else if(j==A.size()){
+                result.push_back(A[i]*A[i]);
+                --i;
+            }
+            else if(A[i]*A[i]&lt;A[j]*A[j]){
+                result.push_back(A[i]*A[i]);
+                --i;
+            }
+            else {
+                result.push_back(A[j]*A[j]);
+                ++j;
+            }
+        }
+        return result;
+    }
+};</code></pre>
+<h2 id="1365-有多少小于当前数字的数字"><a href="#1365-有多少小于当前数字的数字" class="headerlink" title="1365. 有多少小于当前数字的数字"></a><a href="https://leetcode-cn.com/problems/how-many-numbers-are-smaller-than-the-current-number/" target="_blank" rel="noopener">1365. 有多少小于当前数字的数字</a></h2><h3 id="first-try-1"><a href="#first-try-1" class="headerlink" title="first try"></a>first try</h3><pre><code class="line-numbers language-C++">class Solution {
+public:
+    vector&lt;int&gt; smallerNumbersThanCurrent(vector&lt;int&gt;&amp; nums) {
+        vector&lt;int&gt; result;
+        for(int i=0;i&lt;nums.size();i++){
+            int count=0;
+            for(int j=0;j&lt;nums.size();j++){
+                if(j != i){
+                    if(nums[j]&lt;nums[i]){
+                        count++;
+                    }
+                }
+            }
+            result.push_back(count);
+        }
+        return result;
+    }
+};</code></pre>
+</div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>Theffth</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://theffth.github.io/2020/11/01/leetcode-977%201365/" title="LeetCode - 977 1365">http://theffth.github.io/2020/11/01/leetcode-977%201365/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless stating additionally.</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/11/08/shellshock-race-condition-%E7%90%86%E8%A7%A3%E4%B8%8E%E5%A4%8D%E7%8E%B0/" rel="prev" title="shellshock &amp; race condition 原理与复现"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">shellshock &amp; race condition 原理与复现</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/07/29/Compiler-CS143/" rel="next" title="Compiler - CS143"><span class="post-nav-text">Compiler - CS143</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div id="comment"><div class="comment-tooltip text-center"><span>点击按钮跳转 GitHub Issues 评论。</span><br><span>若没有本文 Issue，您可以使用 Comment 模版新建。</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> Theffth</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v4.2.1</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.2.0</span></div></footer><script src="/js/prism/prism.js" async></script><a class="hty-icon-button" id="goUp" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#6200ee" stroke-width="2" stroke-linecap="round"></circle></svg></a></div><script defer src="/js/utils.js"></script><script defer src="/js/hexo-theme-yun.js"></script></body></html>

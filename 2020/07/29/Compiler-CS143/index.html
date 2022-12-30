@@ -1,0 +1,680 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#6200ee"><meta name="author" content="Theffth"><meta name="copyright" content="Theffth"><meta name="generator" content="Hexo 4.2.1"><meta name="theme" content="hexo-theme-yun"><title>Compiler - CS143 | T君的小屋</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.21/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_ed8vp4atwoj.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link rel="shortcut icon" type="image/svg+xml" href="/logo.svg"><link rel="mask-icon" href="/logo.svg" color="#6200ee"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="/css/hexo-theme-yun.css"><link rel="alternate" href="/atom.xml" title="T君的小屋"><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"theffth.github.io","root":"/","title":"T君的小屋","version":"1.2.0","mode":"auto","copycode":true,"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><meta name="description" content="学习Compiler时完成CS143课程相关lab的记录和心得。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Compiler - CS143">
+<meta property="og:url" content="http://theffth.github.io/2020/07/29/Compiler-CS143/index.html">
+<meta property="og:site_name" content="T君的小屋">
+<meta property="og:description" content="学习Compiler时完成CS143课程相关lab的记录和心得。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/Theffth/PictureBed/master/img/cs143-1.png">
+<meta property="article:published_time" content="2020-07-28T16:05:26.000Z">
+<meta property="article:modified_time" content="2020-11-01T07:27:02.138Z">
+<meta property="article:author" content="Theffth">
+<meta property="article:tag" content="compiler">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Theffth/PictureBed/master/img/cs143-1.png"><script src="/js/ui/mode.js"></script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="/js/prism/prism.css"><link rel="alternate" href="/atom.xml" title="T君的小屋" type="application/atom+xml">
+</head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info mickey-mouse"><a class="site-author-avatar" href="/about/" title="Theffth"><img width="96" loading="lazy" src="https://i.loli.net/2020/10/23/EgpBftlhNG5Xaxb.png" alt="Theffth"><span class="site-author-status" title="dropping hair">😆</span></a><div class="site-author-name"><a href="/about/">Theffth</a></div><a class="site-name" href="/about/site.html">T君的小屋</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">5</span></a></div><a class="site-state-item hty-icon-button" href="https://yun.yunyoujun.cn" target="_blank" rel="noopener" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/Theffth" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:1102468264@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Tour-of-the-Cool-Support-Code-部分分析"><span class="toc-number">1.</span> <span class="toc-text">A Tour of the Cool Support Code 部分分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Lists"><span class="toc-number">1.1.</span> <span class="toc-text">Lists</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String-Tables"><span class="toc-number">1.2.</span> <span class="toc-text">String Tables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Symbol-Tables"><span class="toc-number">1.3.</span> <span class="toc-text">Symbol Tables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Utilities"><span class="toc-number">1.4.</span> <span class="toc-text">Utilities</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract-Syntax-Tree"><span class="toc-number">1.5.</span> <span class="toc-text">Abstract Syntax Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Phyla-and-Constructors"><span class="toc-number">1.5.1.</span> <span class="toc-text">Phyla and Constructors</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PA2-lexer-词法分析"><span class="toc-number">2.</span> <span class="toc-text">PA2 lexer 词法分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成lexer代码分析"><span class="toc-number">2.1.</span> <span class="toc-text">生成lexer代码分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PA3-parser-语法分析"><span class="toc-number">3.</span> <span class="toc-text">PA3  parser  语法分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PA4-Semant-语义分析"><span class="toc-number">4.</span> <span class="toc-text">PA4 Semant 语义分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思考问题"><span class="toc-number">4.1.</span> <span class="toc-text">思考问题</span></a></li></ol></li></ol></div></div></div><div class="tag-cloud"><div class="tag-cloud-tags"><a href="/tags/977-1365/" style="font-size: 12px; color: #999">977 1365</a> <a href="/tags/WP/" style="font-size: 12px; color: #999">WP</a> <a href="/tags/compiler/" style="font-size: 12px; color: #999">compiler</a> <a href="/tags/shellshock/" style="font-size: 12px; color: #999">shellshock</a> <a href="/tags/%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6%E6%BC%8F%E6%B4%9E/" style="font-size: 12px; color: #999">竞态条件漏洞</a></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://theffth.github.io/2020/07/29/Compiler-CS143/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Theffth"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="T君的小屋"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Compiler - CS143</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2020-07-29 00:05:26" itemprop="dateCreated datePublished" datetime="2020-07-29T00:05:26+08:00">2020-07-29</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="Modified: 2020-11-01 15:27:02" itemprop="dateModified" datetime="2020-11-01T15:27:02+08:00">2020-11-01</time></div><div class="post-classify"><span class="post-category"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span> <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/Binary-Basics/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">Binary Basics</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag" href="/tags/compiler/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">compiler</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#6200ee;"><p>此文档主要记录和总结cs143课程相关的lab项目。阅读和理解课程提供的任务指导书和任务指导书中要求阅读的材料非常重要。</p>
+<p> The Cool Reference Manual 的部分翻译： <a href="https://www.cnblogs.com/pinkman/archive/2013/03/12/2954902.html" target="_blank" rel="noopener">https://www.cnblogs.com/pinkman/archive/2013/03/12/2954902.html</a> </p>
+<h2 id="A-Tour-of-the-Cool-Support-Code-部分分析"><a href="#A-Tour-of-the-Cool-Support-Code-部分分析" class="headerlink" title="A Tour of the Cool Support Code 部分分析"></a>A Tour of the Cool Support Code 部分分析</h2><p>此文档主要介绍lab project中的提供的文件，结合源代码理解它们并正确使用已有架构很重要。</p>
+<h3 id="Lists"><a href="#Lists" class="headerlink" title="Lists"></a>Lists</h3><p>list.h文件实现了简单的链表数据类型，构造函数List在链表的前部添加新元素，hd返回链表的第一个节点，tl返回链表第一个节点指向的后续链表。提供函数list_map()，list_print(), list_length()。此结构在实现string tables和symbol tables的时候都有用到。</p>
+<h3 id="String-Tables"><a href="#String-Tables" class="headerlink" title="String Tables"></a>String Tables</h3><p>所有的编译器都需要维护大量的字符串，例如：程序标识符、数字型常量和字符串常量。通常，这些字符串中有许多是相同的。例如：每一个标识符通常会在程序中出现很多次。为了确保字符串常量的紧凑存储和有效操作，需要使用专门的数据结构——字符串表。</p>
+<p>字符串表是维护了每一个字符串的简单copy的查找表，Cool字符串表类在stringtab.h中提供了各种插入和查询字符串表的函数。实际中的编译器使用哈希数据结构来实现字符串表，Cool编译器使用lists链表来实现字符串表。</p>
+<p>Cool字符串表由类型Entry组成，每一个Entry存储一个字符串，字符串的长度和该字符串的唯一整数索引下标。Cool编译器结构的重要一点是它有三个不同的字符串表：stringtable（字符串常量表）,inttable（整数常量表）,idtable（标识符表）。code generator 必须区分整数常量和字符串常量，并从标识符中区分它们，因为程序中每一个字符串常量和整数常量都生成不同的代码。拥有三个不同的字符串表容易区分。三个表有不同的数据类型，都是Entry的派生类。指向Entry的指针是Symbol。</p>
+<p>由于字符串表存储每个字符串的copy，比较x和y代表的两个IntEntrys，StrEntrys，IdEntrys是否一样只需要比较x==y。比较两个不同符号表中的字符串是没有意义的。</p>
+<p>有三个函数向表中添加元素：add string(char *s,int m)；add string(char *s)；<br>add int(int i)，返回Entry的派生类来描述符号表表项。</p>
+<p>相关源代码实现：stringtab.h  stringtab_functions.h  stringtab.cc</p>
+<h3 id="Symbol-Tables"><a href="#Symbol-Tables" class="headerlink" title="Symbol Tables"></a>Symbol Tables</h3><p>除了字符串之外，编译器还必须同时确定和管理作用域。Symbol Table是管理作用域的数据结构，是另一个查找表。关键字是符号/名称，结果是与该符号相关的任何信息。</p>
+<p>除了加入和删除符号之外，符号表同时支持进入和退出作用域和检查一个标识符是否在当前作用域下已定义的操作。查询操作必须也遵循语言的作用域规则，如果标识符x有多重定义，作用域规则必须确定x查找返回的定义，在Cool和一般语言中，最内层的定义隐藏外层的定义，因此返回具有x定义的最内层的作用域的定义。</p>
+<p>Cool 符号表是作用域链表实现的，每一个作用域都是&lt;identifier,info&gt;的链表。</p>
+<h3 id="Utilities"><a href="#Utilities" class="headerlink" title="Utilities"></a>Utilities</h3><p>utilities.h和utilities.cc定义了许多函数，供实现和调试Cool 词法和语法分析使用。</p>
+<h3 id="Abstract-Syntax-Tree"><a href="#Abstract-Syntax-Tree" class="headerlink" title="Abstract Syntax Tree"></a>Abstract Syntax Tree</h3><h4 id="Phyla-and-Constructors"><a href="#Phyla-and-Constructors" class="headerlink" title="Phyla and Constructors"></a>Phyla and Constructors</h4><p>AST数据类型为每一种Cool结构提供一个表示该表达式的类。有一个let表达式的类，+表达式的类等等。这些类的对象是Cool 抽象语法树AST的节点。例如：表达式e1+e2由一个+表达式对象和两个子树：一个用于表示e1表达式的树，一个用于表示e2表达式的树。</p>
+<p>Cool 的抽象语法树在一个叫做APS的语言中指定，在APS术语中，抽象语法树的节点（let，＋等）被称为constructors，AST的形式由一组phyla描述，每一种phylum有一个或多个constructors。</p>
+<p>Phyla实际上是类型，也就是说，不是一大组没有分化过的constructors，而是constructors根据功能分组在一起。例如：表达式的抽象语法树和类抽象语法树不同。phyla定义在文件cool-tree.aps中:</p>
+<pre><code>module COOL begin
+  phylum Program;
+
+  phylum Class_;
+  phylum Classes = LIST[Class_];
+
+  phylum Feature;
+  phylum Features = LIST[Feature];
+
+  phylum Formal;
+  phylum Formals = LIST[Formal];
+
+  phylum Expression;
+  phylum Expressions = LIST[Expression];
+
+  phylum Case;
+  phylum Cases = LIST[Case];</code></pre><p>从定义中可以看出，有两种完全不同的phyla：普通型phyla和链表型phyla，每个普通型phyla都有相关的constructors，链表型phyla有一组固定的list操作。</p>
+<p>每一个constructor都有含有类型的参数并返回一个有类型的结果。类型要么是phyla要么是任何普通的C++类型。实际上，phyla声明本身会由APS编译器编译成C++类声明。一个constructor定义的样例如下：</p>
+<pre><code>constructor class_(name : Symbol ; parent : Symbol ; features : Features ; filename : Symbol): Class_;</code></pre><p>定义指出class_ constructor有四个参数：一个类名的Symbol，一个父类名的Symbol，一个Features，一个该类定义出现的文件名的Symbol。Features的phylum被定义为Feature的链表：</p>
+<pre><code>phylum Features = LIST[Feature];</code></pre><p>定义在AST链表上的操作描述见第二小节。</p>
+<p>class_ constructor返回一个Class_类型的抽象语法树。在cool.y文件中，有一个使用class_ constructor的例子：</p>
+<pre><code>class : CLASS TYPEID INHERITS TYPEID IS optional_feature_list END ’;’
+{ $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }</code></pre><p>class_ constructor 建立了一个Class_树节点，有四个参数作为子节点。因为参数类型被声明了，C++类型检查器会强制class_ constructor只接受正确类型的参数。见第五小节和cool-tree.aps了解更多其他constructors。</p>
+<h2 id="PA2-lexer-词法分析"><a href="#PA2-lexer-词法分析" class="headerlink" title="PA2 lexer 词法分析"></a>PA2 lexer 词法分析</h2><p>完成此lab前主要学习哈工大编译原理视频。理解任务说明书非常重要。</p>
+<p>参考资料：</p>
+<p>flex文档（尤其参考其中pattern部分）： <a href="https://eternalsakura13.com/2020/05/27/flex/" target="_blank" rel="noopener">https://eternalsakura13.com/2020/05/27/flex/</a> </p>
+<p><a href="https://courses.edx.org/assets/courseware/v1/27e1a38f1161e61d91c25a4b1805489b/asset-v1:StanfordOnline+SOE.YCSCS1+1T2020+type@asset+block/cool_manual.pdf" target="_blank" rel="noopener">The Cool Reference Manual</a> 中 10 Lexical Structure 和  11 Cool Syntax 部分</p>
+<p>词法分析器lexer可以将我们输入的程序语言与编写的正则表达式的规则进行匹配来返回一个个token。</p>
+<p>在这个lab中我们使用flex语言来编写Cool编译器的词法分析器。利用Flex我们可以通过为每一个匹配的pattern编写一些正则表达式和对应执行的action来实现词法分析器。Flex会把我们的规则文件编译成C源码，实现一个有穷自动机，以识别我们在规则文件中指定的正则表达式。可以检查出因为状态机无法正确转换的错误，例如：引号、注释符号不闭合；字符串过长等。</p>
+<p>flex语言的结构如下：</p>
+<pre><code>%{
+Declarations
+%}
+Definitions
+%%
+Rules
+%%
+User subroutines</code></pre><p>其中Declarations和User subroutines是可选项。Definition也是可选的，但是便于我们给正则表达式取名字，例如：<code>\DIGIT [0-9]</code>定义了数字。其中，最重要的部分是rules，它指定了有匹配到的正则表达式时进行的action，action有常规的C语言代码指定。Flex使用最长匹配原则。</p>
+<p>编写规则的时候，根据之前遇到的tokens来执行不同的action。可以通过在declaration中声明全局变量来追踪状态，Flex中提供了状态声明的方式，例如：</p>
+<pre><code>%Start COMMENT</code></pre><p>可以通过<code>BEGIN(COMMENT)</code>把COMMENT状态设置为TRUE，要仅在先前遇到开头注释时执行操作，可以使用以下语法在状态COMMENT中声明规则：</p>
+<pre><code>&lt;COMMENT&gt; {
+// the rest of your rule ...
+}</code></pre><p>特殊的默认状态是INITIAL。</p>
+<h3 id="生成lexer代码分析"><a href="#生成lexer代码分析" class="headerlink" title="生成lexer代码分析"></a>生成lexer代码分析</h3><p>主要分析编写编译器过程中生成的cool-lex.cc文件的代码结构：</p>
+<p>首先是定义flex版本号和flex整数类型，以及一些处理缓冲区和状态转换的宏定义，</p>
+<pre><code class="line-numbers language-C">/* A lexical scanner generated by flex */
+#define FLEX_SCANNER
+#define YY_FLEX_MAJOR_VERSION 2
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 0
+#if YY_FLEX_SUBMINOR_VERSION &gt; 0
+#define FLEX_BETA
+#endif
+
+/* First, we deal with  platform-specific or compiler-specific issues. */
+
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* flex integer type definitions */
+
+#ifndef FLEXINT_H
+#define FLEXINT_H
+
+/* C99 systems have &lt;inttypes.h&gt;. Non-C99 systems may or may not. */
+
+typedef signed char flex_int8_t;
+typedef short int flex_int16_t;
+typedef int flex_int32_t;
+typedef unsigned char flex_uint8_t; 
+typedef unsigned short int flex_uint16_t;
+typedef unsigned int flex_uint32_t;
+
+/* Limits of integral types. */
+#ifndef INT8_MIN
+#define INT8_MIN               (-128)
+#endif
+#ifndef INT16_MIN
+#define INT16_MIN              (-32767-1)
+#endif
+#ifndef INT32_MIN
+#define INT32_MIN              (-2147483647-1)
+#endif
+#ifndef INT8_MAX
+#define INT8_MAX               (127)
+#endif
+#ifndef INT16_MAX
+#define INT16_MAX              (32767)
+#endif
+#ifndef INT32_MAX
+#define INT32_MAX              (2147483647)
+#endif
+#ifndef UINT8_MAX
+#define UINT8_MAX              (255U)
+#endif
+#ifndef UINT16_MAX
+#define UINT16_MAX             (65535U)
+#endif
+#ifndef UINT32_MAX
+#define UINT32_MAX             (4294967295U)
+#endif
+
+#endif /* ! C99 */
+
+#endif /* ! FLEXINT_H */
+
+/*存储类修饰符const有效 */
+#define YY_USE_CONST
+
+#ifdef YY_USE_CONST
+#define yyconst const
+#else
+#define yyconst
+#endif
+
+/* %not-for-header */
+
+/* 在文件结束时返回YY_NULL */
+#define YY_NULL 0
+
+/*将可能为负的，可能为带符号的char转换为一个无符号整数，
+ *以用作数组索引。如果带符号的char为负数，我们想将其视为8位无符号的char，
+ *因此采用双精度强制转换。
+ */
+#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+
+/* 进入开始状态 */
+#define BEGIN (yy_start) = 1 + 2 *
+
+/* 将当前的开始状态转换为一个值，以后可以将该值传递给BEGIN以返回该状态。
+   YYSTATE别名用于lex兼容性。
+ */
+#define YY_START (((yy_start) - 1) / 2)
+#define YYSTATE YY_START
+
+/* 给定开始状态的EOF规则的action num。 */
+#define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
+
+/* 开始处理新文件 */
+#define YY_NEW_FILE yyrestart(yyin  )
+
+#define YY_END_OF_BUFFER_CHAR 0
+
+/* 默认输入缓冲区的大小 */
+#ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
+#define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
+#endif
+
+/* 状态buf必须足够大，才能在主缓冲区中为每个字符保留一个状态。*/
+#define YY_STATE_BUF_SIZE   ((YY_BUF_SIZE + 2) * sizeof(yy_state_type))
+
+#ifndef YY_TYPEDEF_YY_BUFFER_STATE
+#define YY_TYPEDEF_YY_BUFFER_STATE
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
+#endif
+
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t yyleng;
+
+extern FILE *yyin, *yyout;
+
+#define EOB_ACT_CONTINUE_SCAN 0
+#define EOB_ACT_END_OF_FILE 1
+#define EOB_ACT_LAST_MATCH 2
+
+    #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
+
+/* 将除前 n 个匹配字符外的所有字符返回到输入流。 */
+#define yyless(n) \
+    do \
+        { \
+        /*撤消设置yytext的效果。*/ \
+        int yyless_macro_arg = (n); \
+        YY_LESS_LINENO(yyless_macro_arg);\
+        *yy_cp = (yy_hold_char); \
+        YY_RESTORE_YY_MORE_OFFSET \
+        (yy_c_buf_p) = yy_cp = yy_bp + yyless_macro_arg - YY_MORE_ADJ; \
+        YY_DO_BEFORE_ACTION; /* set up yytext again */ \
+        } \
+    while ( 0 )
+
+#define unput(c) yyunput( c, (yytext_ptr)  )
+
+#ifndef YY_STRUCT_YY_BUFFER_STATE
+#define YY_STRUCT_YY_BUFFER_STATE
+struct yy_buffer_state
+    {
+    FILE *yy_input_file;
+    char *yy_ch_buf;        /* input buffer */
+    char *yy_buf_pos;        /* current position in input buffer */
+
+    /* 输入缓冲区的大小（以字节为单位），不包括EOB字符的空间。*/
+    yy_size_t yy_buf_size;
+
+    /* 读入yy_ch_buf的字符数，不包括EOB字符。*/
+    int yy_n_chars;
+
+    /*是否创建缓冲区，并且可以对其进行realloc()和free() */
+    int yy_is_our_buffer;
+
+    /* 是否是交互式输入; 如果是交互式,并且如果我们使用stdio作为输入,那么我们要使用getc()
+     * 而不是fread(), 以确保我们在每个换行符之后都停止获取输入
+     */
+    int yy_is_interactive;
+
+    /* 是否认为我们处于一行的开头,如果是,则&#39;^&#39;规则将在下一场匹配中生效，否则无效。
+     */
+    int yy_at_bol;
+
+    int yy_bs_lineno; /**&lt; The line count. */
+    int yy_bs_column; /**&lt; The column count. */
+
+    /* 在到达输入缓冲区的末尾时是否尝试填充它 */
+    int yy_fill_buffer;
+
+    int yy_buffer_status;
+
+#define YY_BUFFER_NEW 0
+#define YY_BUFFER_NORMAL 1
+    /* 如果看到了EOF,但仍有一些文本要处理,则我们将缓冲区标记为YY_EOF_PENDING,
+    *  以表明我们不应该再尝试从输入源中进行读取了
+    *  但是，由于可能存在备份，我们可能仍有许多tokens要匹配
+    *  当我们实际看到EOF时，我们将状态更改为 new (通过yyrestart())，
+    *  以便用户只需将yyin指向新的输入文件即可继续扫描
+    */
+#define YY_BUFFER_EOF_PENDING 2
+    };
+#endif /* !YY_STRUCT_YY_BUFFER_STATE */
+
+/* Stack of input buffers. */
+static size_t yy_buffer_stack_top = 0; /**&lt; index of top of stack. */
+static size_t yy_buffer_stack_max = 0; /**&lt; capacity of stack. */
+static YY_BUFFER_STATE * yy_buffer_stack = 0; /**&lt; Stack as an array. */
+
+/* 我们提供了用于访问缓冲区状态的宏,以防将来我们希望将缓冲区状态置于更通用的&quot;扫描器状态&quot;中
+ * 返回栈顶或NULL
+ */
+#define YY_CURRENT_BUFFER ( (yy_buffer_stack) \
+                          ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                          : NULL)
+
+/* 与以前的宏相同，但是便于缓冲区堆栈不是NULL或需要左值时 仅在内部使用
+ */
+#define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
+
+/* yy_hold_char holds the character lost when yytext is formed. */
+static char yy_hold_char;
+static int yy_n_chars;        /* number of characters read into yy_ch_buf */
+yy_size_t yyleng;
+
+/* Points to current character in buffer. */
+static char *yy_c_buf_p = (char *) 0;
+static int yy_init = 0;        /* whether we need to initialize */
+static int yy_start = 0;    /* start state number */
+
+/* 用于允许yywrap()进行缓冲区切换而不是设置新的yyin的标志
+ */
+static int yy_did_buffer_switch_on_eof;
+
+void yyrestart (FILE *input_file  );
+void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_create_buffer (FILE *file,int size  );
+void yy_delete_buffer (YY_BUFFER_STATE b  );
+void yy_flush_buffer (YY_BUFFER_STATE b  );
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer  );
+void yypop_buffer_state (void );
+
+static void yyensure_buffer_stack (void );
+static void yy_load_buffer_state (void );
+static void yy_init_buffer (YY_BUFFER_STATE b,FILE *file  );
+
+#define YY_FLUSH_BUFFER yy_flush_buffer(YY_CURRENT_BUFFER )
+
+YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size  );
+YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str  );
+YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,yy_size_t len  );
+
+void *yyalloc (yy_size_t  );
+void *yyrealloc (void *,yy_size_t  );
+void yyfree (void *  );
+
+#define yy_new_buffer yy_create_buffer
+
+#define yy_set_interactive(is_interactive) \
+    { \
+    if ( ! YY_CURRENT_BUFFER ){ \
+        yyensure_buffer_stack (); \
+        YY_CURRENT_BUFFER_LVALUE =    \
+            yy_create_buffer(yyin,YY_BUF_SIZE ); \
+    } \
+    YY_CURRENT_BUFFER_LVALUE-&gt;yy_is_interactive = is_interactive; \
+    }
+
+#define yy_set_bol(at_bol) \
+    { \
+    if ( ! YY_CURRENT_BUFFER ){\
+        yyensure_buffer_stack (); \
+        YY_CURRENT_BUFFER_LVALUE =    \
+            yy_create_buffer(yyin,YY_BUF_SIZE ); \
+    } \
+    YY_CURRENT_BUFFER_LVALUE-&gt;yy_at_bol = at_bol; \
+    }
+
+#define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE-&gt;yy_at_bol)
+
+/* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def&#39;s &amp; init go here */
+/* Begin user sect3 */
+
+#define FLEX_DEBUG
+
+typedef unsigned char YY_CHAR;
+
+FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
+
+typedef int yy_state_type;
+
+extern int yylineno;
+
+int yylineno = 1;
+
+extern char *yytext;
+#ifdef yytext_ptr
+#undef yytext_ptr
+#endif
+#define yytext_ptr yytext
+
+static yy_state_type yy_get_previous_state (void );
+static yy_state_type yy_try_NUL_trans (yy_state_type current_state  );
+static int yy_get_next_buffer (void );
+static void yy_fatal_error (yyconst char msg[]  );
+
+/* 在匹配当前模式之后且在执行相应操作之前完成-设置yytext
+ */
+#define YY_DO_BEFORE_ACTION \
+    (yytext_ptr) = yy_bp; \
+/* %% [2.0] code to fiddle yytext and yyleng for yymore() goes here \ */\
+    yyleng = (size_t) (yy_cp - yy_bp); \
+    (yy_hold_char) = *yy_cp; \
+    *yy_cp = &#39;\0&#39;; \
+/* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
+    (yy_c_buf_p) = yy_cp;
+
+/* %% [4.0] data tables for the DFA and the user&#39;s section 1 definitions go here */
+#define YY_NUM_RULES 45
+#define YY_END_OF_BUFFER 46</code></pre>
+<p>接下来是压缩后的DFA状态转移表：</p>
+<pre><code class="line-numbers language-C">yyconst flex_int16_t yy_accept[168]
+yyconst YY_CHAR yy_ec[256]
+yyconst YY_CHAR yy_meta[53]
+yyconst flex_uint16_t yy_base[174]
+yyconst flex_int16_t yy_def[174]
+yyconst flex_uint16_t yy_nxt[349]
+yyconst flex_int16_t yy_chk[349]</code></pre>
+<p>随后，DFA的工作通过YY_DECL实现，省略了部分条件分支语句的代码如下：</p>
+<pre><code class="line-numbers language-C">YY_DECL
+{
+    yy_state_type yy_current_state;
+    char *yy_cp, *yy_bp;
+    int yy_act;
+
+    if ( !(yy_init) )
+        {
+        (yy_init) = 1;
+        if ( ! (yy_start) )
+            (yy_start) = 1;    /* first start state */
+        if ( ! yyin )
+            yyin = stdin;
+        if ( ! yyout )
+            yyout = stdout;
+        if ( ! YY_CURRENT_BUFFER ) {
+            yyensure_buffer_stack ();
+            YY_CURRENT_BUFFER_LVALUE =
+                yy_create_buffer(yyin,YY_BUF_SIZE );
+        }
+        yy_load_buffer_state( );
+        }
+
+    {
+    while ( 1 )        /* loops until end-of-file is reached */
+        {
+        /* 设置在buf中的指针，通过yytext获取相应的字符串 */
+        yy_cp = (yy_c_buf_p);
+
+        /* Support of yytext. */
+        *yy_cp = (yy_hold_char);
+
+        /* 初始时 yy_bp 指向 yy_ch_buf */
+        yy_bp = yy_cp;
+        /* 初始从start状态开始 */
+        yy_current_state = (yy_start);
+yy_match:
+/* 开始进行状态转移, 通过yy_nxt表，结合yy_current_state和当前读入的字符来索引跳转状态, 直到无法转移*/
+        do
+            {
+            YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
+            if ( yy_accept[yy_current_state] )
+                {
+                (yy_last_accepting_state) = yy_current_state;
+                (yy_last_accepting_cpos) = yy_cp;
+                }
+            while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+                {
+                yy_current_state = (int) yy_def[yy_current_state];
+                if ( yy_current_state &gt;= 168 )
+                    yy_c = yy_meta[(unsigned int) yy_c];
+                }
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+            ++yy_cp;
+            }
+        while ( yy_base[yy_current_state] != 296 );
+
+yy_find_action:
+/* 判断转移后的状态是否是accept ，是否需要后退处理 */
+        yy_act = yy_accept[yy_current_state];
+        if ( yy_act == 0 )
+            { /* have to back up */
+            yy_cp = (yy_last_accepting_cpos);
+            yy_current_state = (yy_last_accepting_state);
+            yy_act = yy_accept[yy_current_state];
+            }
+
+        YY_DO_BEFORE_ACTION;
+
+do_action:    
+/* 执行成功匹配规则对应的actions */
+        if ( yy_flex_debug )
+            {
+            if ( yy_act == 0 )
+                fprintf( stderr, &quot;--scanner backing up\n&quot; );
+            else if ( yy_act &lt; 45 )
+                fprintf( stderr, &quot;--accepting rule at line %ld (\&quot;%s\&quot;)\n&quot;,
+                         (long)yy_rule_linenum[yy_act], yytext );
+            else if ( yy_act == 45 )
+                fprintf( stderr, &quot;--accepting default rule (\&quot;%s\&quot;)\n&quot;,
+                         yytext );
+            else if ( yy_act == 46 )
+                fprintf( stderr, &quot;--(end of buffer or a NUL)\n&quot; );
+            else
+                fprintf( stderr, &quot;--EOF (start condition %d)\n&quot;, YY_START );
+            }
+
+        switch ( yy_act )
+    { 
+            case 0: /* must back up */
+            /* undo the effects of YY_DO_BEFORE_ACTION */
+            *yy_cp = (yy_hold_char);
+            yy_cp = (yy_last_accepting_cpos);
+            yy_current_state = (yy_last_accepting_state);
+            goto yy_find_action;
+
+case 1:
+YY_RULE_SETUP
+#line 64 &quot;cool.flex&quot;
+{BEGIN COMMENT_IN_LINE;}
+    YY_BREAK
+...
+/* 此处省略case语句 */
+
+        else switch ( yy_get_next_buffer(  ) )
+            {
+            case EOB_ACT_END_OF_FILE:
+                {
+                (yy_did_buffer_switch_on_eof) = 0;
+
+                if ( yywrap( ) )
+                    {
+                    /* 注意：因为我们已经在yy_get_next_buffer()中设置了yytext,
+                     * 所以我们现在可以设置yy_c_buf_p
+                     */
+                    (yy_c_buf_p) = (yytext_ptr) + YY_MORE_ADJ;
+
+                    yy_act = YY_STATE_EOF(YY_START);
+                    goto do_action;
+                    }
+
+                else
+                    {
+                    if ( ! (yy_did_buffer_switch_on_eof) )
+                        YY_NEW_FILE;
+                    }
+                break;
+                }
+
+            case EOB_ACT_CONTINUE_SCAN:
+                (yy_c_buf_p) =
+                    (yytext_ptr) + yy_amount_of_matched_text;
+
+                yy_current_state = yy_get_previous_state(  );
+
+                yy_cp = (yy_c_buf_p);
+                yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+                goto yy_match;
+
+            case EOB_ACT_LAST_MATCH:
+                (yy_c_buf_p) =
+                &amp;YY_CURRENT_BUFFER_LVALUE-&gt;yy_ch_buf[(yy_n_chars)];
+
+                yy_current_state = yy_get_previous_state(  );
+
+                yy_cp = (yy_c_buf_p);
+                yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+                goto yy_find_action;
+            }
+        break;
+        }
+
+    default:
+        YY_FATAL_ERROR(
+            &quot;fatal flex scanner internal error--no action found&quot; );
+    } /* end of action switch */
+        } /* end of scanning one token */
+    } /* end of user&#39;s declarations */
+} /* end of yylex */</code></pre>
+<p>以上是DFA的整体工作代码，也是lexer工作的核心。简单来说，有穷状态机DFA通过处理输入缓冲区的字符，从start状态进行状态转换，直到不能再进行转换或字符串处理完成后，判断是否处于accept状态，若符合则执行相应的动作action，至此实现了 pattern -&gt; action 的对应。</p>
+<p>参考： <a href="https://happyers.top/uncategorized/understanding-c-lexer-generated-by-flex/" target="_blank" rel="noopener">https://happyers.top/uncategorized/understanding-c-lexer-generated-by-flex/</a> </p>
+<h2 id="PA3-parser-语法分析"><a href="#PA3-parser-语法分析" class="headerlink" title="PA3  parser  语法分析"></a>PA3  parser  语法分析</h2><p>完成此lab前主要学习哈工大编译原理视频。理解任务说明书非常重要。</p>
+<p>参考资料：</p>
+<p><img src="https://raw.githubusercontent.com/Theffth/PictureBed/master/img/cs143-1.png" alt="" loading="lazy"></p>
+<p>bison语言： <a href="https://www.cnblogs.com/pinkman/p/3179056.html" target="_blank" rel="noopener">https://www.cnblogs.com/pinkman/p/3179056.html</a> </p>
+<p>在这个lab中，我们使用bison语言实现一个语法分析器。语法分析器的输出是抽象语法树AST，bison使用自底向上、左递归的方式，因此可以因无法规约检查出一些不符合语法规则的错误。</p>
+<p>生成parser代码分析主要学习： <a href="https://happyers.top/compiler/bison-parser/" target="_blank" rel="noopener">https://happyers.top/compiler/bison-parser/</a> </p>
+<h2 id="PA4-Semant-语义分析"><a href="#PA4-Semant-语义分析" class="headerlink" title="PA4 Semant 语义分析"></a>PA4 Semant 语义分析</h2><p>此lab的完成主要学习Stanford课程的PPT。</p>
+<p>目的：完善由parser生成的AST，为其添加函数和数据成员，便于code generator所用。</p>
+<p>主要参考资料：</p>
+<p>Cool Reference Manual：参考相关类型规则，标识符作用域规则，Cool语言的相关限制</p>
+<p> A Tour of Cool Support Code：结合project中的源码理解已有的架构</p>
+<p>主要任务：</p>
+<ol>
+<li><p>找到所有的类并建立继承图</p>
+</li>
+<li><p>检查继承图是否规范</p>
+<p>继承图不能成环，Cool中从基本类继承有限制，如果A类继承了B类但是B类未定义也是一种错误</p>
+</li>
+<li><p>对于每一个类：</p>
+<ol>
+<li><p>遍历AST，把所有可视化的声明加入到符号表中</p>
+<p>需要遍历树，管理从AST中收集到的信息，并由此加强语义分析，同时需要利用SymbolTable确定变量的有效作用域</p>
+</li>
+<li><p>检查每一个表达式的类型正确性</p>
+<p>包括检查是否在有需要时声明有效类型，以及根据类型规则验证每个表达式是否具有有效类型</p>
+</li>
+<li><p>用类型注释符号表</p>
+</li>
+<li><p>给出恰当的错误报告</p>
+<p>除了类继承关系的错误之外，语义分析需要为其他错误给出完整且信息丰富的错误</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>主要实现：</p>
+<ul>
+<li>安装基本类<ul>
+<li>Basic Class中只有Object 和 IO 类可以被继承，其余类均不可被继承</li>
+</ul>
+</li>
+<li>安装用户自定义类<ul>
+<li>会检查是否与基本类和已install的用户定义类重复</li>
+</ul>
+</li>
+<li>简单检查不正确的继承关系<ul>
+<li>会检查是否继承自未定义或者不可被继承的父类</li>
+</ul>
+</li>
+<li>建立继承树，建立父子继承关系</li>
+<li>从继承树的根部自顶向下标记reachable</li>
+<li>判断继承图是否成环<ul>
+<li>为每一个类继承节点设置父子节点关系，由于Cool中的继承是单继承的，每个没有继承父类的节点都设置为继承自父类，因此如果出现成环的情况，该环一定独立于以Object为根的AST。从抽象语法树的根Object出发，递归遍历AST树，为每一个子类标记为Reachable，再次遍历所有的类继承节点，若出现没有被标记过的类，则说明该继承图中存在环，退出。</li>
+</ul>
+</li>
+<li>建立feature_table，添加每一个类的attr和method</li>
+<li>检查main函数</li>
+<li>从Root自顶向下检查每一个类的features：对类中的每一个attr和method进行类型检查</li>
+</ul>
+<p>具体实现：<a href="https://github.com/Theffth/skr_university/tree/master/compiler/cool/assignments" target="_blank" rel="noopener">https://github.com/Theffth/skr_university/tree/master/compiler/cool/assignments</a></p>
+<p>项目地址：<a href="https://github.com/Theffth/skr_university/tree/master/compiler" target="_blank" rel="noopener">https://github.com/Theffth/skr_university/tree/master/compiler</a></p>
+<h3 id="思考问题"><a href="#思考问题" class="headerlink" title="思考问题"></a>思考问题</h3><ul>
+<li><p>浮点数和无符号整数的文法</p>
+<ul>
+<li><p>无符号整数的文法：</p>
+<p>​    S-&gt;DE</p>
+<p>​    E-&gt;ET| ε </p>
+<p>​    T-&gt;0|D</p>
+<p>​    D-&gt;1|2|3|4|5|6|7|8|9</p>
+</li>
+<li><p>浮点数的文法</p>
+<p>​    S -&gt; WpR</p>
+<p>​    W -&gt; DE</p>
+<p>​    E -&gt; R | ε </p>
+<p>​    T -&gt; 0|D</p>
+<p>​    D -&gt; 1|2|3|4|5|6|7|8|9</p>
+</li>
+</ul>
+</li>
+<li><p>各类文法的使用条件和比较</p>
+<ul>
+<li><p>自顶向下分析：预测分析法</p>
+<p>​    LL(1)文法：满足同一非终结符的可产生式的可选集互不相交</p>
+<p>​    条件：A-&gt; α | β</p>
+<ul>
+<li>α 和 β 均不能推导出 ε </li>
+<li>α 和 β 至多有一个推导出 ε </li>
+</ul>
+</li>
+<li><p>自底向上分析：移入-归约分析</p>
+<ul>
+<li>关键问题：如何识别句柄？<ul>
+<li>LR分析法<ul>
+<li>LR(0)分析 ：存在移进-归约冲突 &amp; 归约-归约冲突 ==&gt;</li>
+<li>SLR分析 :  通过简单的向前查看一个符号以确定是否是归约或如何归约，但只是必要不充分条件   ==&gt;</li>
+<li>LR(1)分析 ：在特定位置，A的后继集合是FOLLOW(A)的子集，但比LR(0)分析的状态多很多 ==&gt;</li>
+<li>LALR分析：把没有冲突的状态集进行合并，但可能会出现归约-归约冲突和推迟错误的发现</li>
+<li>综上：SLR &lt; LALR &lt; LR(1)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><pre><code class="line-numbers language-C">for (nd = lookup_class(type1); !type_leq(type2, nd-&gt;get_name()); nd = nd-&gt;get_parentnd())</code></pre>
+<p>可以改成type_leq(nd-&gt;get_name(),type2) 吗？</p>
+<p>不可以，在COOL语言中没有定义<code>&gt;</code>，在类型检查中≤的含义是继承自，需要看继承图中的父子关系。如果求两个类型的最小上界类型的话，应该从一个结点出发一直搜索直到找到另一个节点的父类，如果改成type_leq(nd-&gt;get_name(),type2)的话，只要nd不继承自type2就会终止循环并返回nd，可见，两者终止条件不同。</p>
+</li>
+</ul>
+</div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>Theffth</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://theffth.github.io/2020/07/29/Compiler-CS143/" title="Compiler - CS143">http://theffth.github.io/2020/07/29/Compiler-CS143/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless stating additionally.</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/11/01/leetcode-977%201365/" rel="prev" title="LeetCode - 977 1365"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">LeetCode - 977 1365</span></a></div><div class="post-nav-item"></div></div></div><div id="comment"><div class="comment-tooltip text-center"><span>点击按钮跳转 GitHub Issues 评论。</span><br><span>若没有本文 Issue，您可以使用 Comment 模版新建。</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> Theffth</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v4.2.1</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.2.0</span></div></footer><script src="/js/prism/prism.js" async></script><a class="hty-icon-button" id="goUp" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#6200ee" stroke-width="2" stroke-linecap="round"></circle></svg></a></div><script defer src="/js/utils.js"></script><script defer src="/js/hexo-theme-yun.js"></script></body></html>
